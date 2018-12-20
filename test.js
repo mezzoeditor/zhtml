@@ -27,8 +27,8 @@ testRunner.afterAll(async({server}) => {
   await server.stop();
 });
 
-require('./html.spec.js').addTests(testRunner, require('puppeteer'), 'Chromium');
-require('./html.spec.js').addTests(testRunner, require('puppeteer-firefox'), 'Firefox');
+require('./zhtml.spec.js').addTests(testRunner, require('puppeteer'), 'Chromium');
+require('./zhtml.spec.js').addTests(testRunner, require('puppeteer-firefox'), 'Firefox');
 
 new Reporter(testRunner, path.join(__dirname));
 testRunner.run();
