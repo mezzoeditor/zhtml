@@ -2,7 +2,8 @@
 
 ## Installation
 
-Import `html` function from `zhtml.js`.
+1. Copy `zhmlt.js` to your project.
+2. Import `html` function from `zhtml.js`.
 
 ```js
 import {html} from './path/to/zhtml.js';
@@ -34,9 +35,22 @@ return html`
 `;
 ```
 
+Top-level node returned by `html` function also has shortcuts for `querySelector` and
+`querySelectorAll`:
+
+```js
+const dom = html`<a>foo</a><a class=bar>baz</a>`;
+const oneA = dom.$('.bar');
+const allA = dom.$$('a');
+
+// $ and $$ shortcuts are not defined for text nodes:
+const textNode = html`yo`;
+textNode.$; // undefined - there's no querySelector.
+```
+
 ## Text Nodes
 
-`zhtml` drops empty text nodes where possible, so markup can be lined with context
+`zhtml` drops empty text nodes where possible, so markup can be alined with
 indentation.
 
 ```js
@@ -91,4 +105,19 @@ for (let i = 0; i < 10000; ++i) {
 console.timeEnd('zhtml');
 
 ```
+
+## Inspiration
+
+Inspired by Dmitry Gozman's experiments.
+
+Similar projects:
+- [lit-html](https://github.com/Polymer/lit-html)
+- [hyperHTML](https://github.com/WebReflection/hyperHTML)
+
+## Motivation
+
+`zhtml` does exactly what I want:
+- always returns Node (either DocumentFragment, TextNode or Element)
+- has shortcuts for `querySelector` and `querySelectorAll`
+- tiny: 150LOC. Copy & change however you want.
 

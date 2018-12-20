@@ -32,3 +32,4 @@ require('./zhtml.spec.js').addTests(testRunner, require('puppeteer-firefox'), 'F
 
 new Reporter(testRunner, path.join(__dirname));
 testRunner.run();
+

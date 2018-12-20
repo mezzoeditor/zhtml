@@ -2,13 +2,13 @@
   "name": "html",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "zhtml.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Andrey Lushnikoov",
+  "license": "Apache-2.0",
   "dependencies": {
     "@pptr/testrunner": "^0.5.0",
     "@pptr/testserver": "^0.5.0",
