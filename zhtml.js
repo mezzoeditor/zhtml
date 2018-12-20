@@ -1,3 +1,7 @@
+/**
+ * ZHTML 1.0.0
+ * https://github.com/aslushnikov/zhtml
+ */
 const templateCache = new Map();
 
 export function html(strings, ...values) {
