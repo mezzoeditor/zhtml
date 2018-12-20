@@ -19,11 +19,10 @@ export function html(strings, ...values) {
 }
 
 const SPACE_REGEX = /^\s*$/;
-const markerRegex = /z-t-e-\d+-m-p-l-a-t-e/;
+const MARKER_REGEX = /z-t-e-\d+-m-p-l-a-t-e/;
 
 class ZTemplate {
   static process(strings) {
-
     const template = document.createElement('template');
     let html = ''
     for (let i = 0; i < strings.length - 1; ++i) {
@@ -40,15 +39,15 @@ class ZTemplate {
     const subs = [];
     while (walker.nextNode()) {
       const node = walker.currentNode;
-      if (node.nodeType === Node.ELEMENT_NODE && markerRegex.test(node.tagName))
+      if (node.nodeType === Node.ELEMENT_NODE && MARKER_REGEX.test(node.tagName))
         throw new Error('Should not use a parameter as an html tag');
 
       if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
         for (let i = 0; i < node.attributes.length; i++) {
           const name = node.attributes[i].name;
 
-          const isNameMatching = markerRegex.test(name);
-          const isValueMatching = markerRegex.test(node.attributes[i].value);
+          const isNameMatching = MARKER_REGEX.test(name);
+          const isValueMatching = MARKER_REGEX.test(node.attributes[i].value);
 
           let type = null;
           if (isNameMatching && isValueMatching)
@@ -61,8 +60,8 @@ class ZTemplate {
           if (type)
             subs.push({ node, type, attr: name});
         }
-      } else if (node.nodeType === Node.TEXT_NODE && markerRegex.test(node.data)) {
-        const texts = node.data.split(markerRegex);
+      } else if (node.nodeType === Node.TEXT_NODE && MARKER_REGEX.test(node.data)) {
+        const texts = node.data.split(MARKER_REGEX);
         node.data = texts[0];
         const anchor = node.nextSibling;
         for (let i = 1; i < texts.length; ++i) {
@@ -119,8 +118,7 @@ class ZTemplate {
       node.removeAttribute('z-framework-marked-node');
 
     let valueIndex = 0;
-    const interpolateTextValues = (text) => {
-      const texts = text.split(markerRegex);
+    const interpolateText= (texts) => {
       let newText = texts[0];
       for (let i = 1; i < texts.length; ++i) {
         newText += this._values[valueIndex++];
@@ -135,12 +133,23 @@ class ZTemplate {
         const attribute = node.attributes[sub.attr];
         let name = attribute.name;
         let value = attribute.value;
+        let maybeHandleBooleanValue = false;
         node.removeAttribute(name);
         if (sub.type === 'attribute-all' || sub.type === 'attribute-name')
-          name = interpolateTextValues(name);
-        if (sub.type === 'attribute-all' || sub.type === 'attribute-value')
-          value = interpolateTextValues(value);
-        node.setAttribute(name, value);
+          name = interpolateText(name.split(MARKER_REGEX), false /* isAttributeValue */);
+        if (sub.type === 'attribute-all' || sub.type === 'attribute-value') {
+          const texts = value.split(MARKER_REGEX);
+          if (texts.length === 2 && texts[0] === '' && texts[1] === '') {
+            value = this._values[valueIndex++];
+            maybeHandleBooleanValue = true;
+          } else {
+            value = interpolateText(texts);
+          }
+        }
+        if (maybeHandleBooleanValue && (typeof value === 'boolean' || (value instanceof Boolean)))
+          node.toggleAttribute(name, value);
+        else
+          node.setAttribute(name, value);
       } else if (sub.type === 'replace-node') {
         const replacement = this._values[valueIndex++];
         if (Array.isArray(replacement)) {

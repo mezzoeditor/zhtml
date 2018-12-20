@@ -136,6 +136,45 @@ it('should interpolate attribute names', {
   }
 });
 
+it('should do many interpolations inside attribute name', {
+  dom: () => html`<div ${'f'}-${'o'}-${'o'}=bar></div>`,
+  expected: {
+    name: 'DIV',
+    attr: 'f-o-o=bar',
+  }
+});
+
+it('should do many interpolations inside attribute value', {
+  dom: () => html`<div foo=${'b'}-${'a'}-${'r'}></div>`,
+  expected: {
+    name: 'DIV',
+    attr: 'foo=b-a-r',
+  }
+});
+
+it('should support boolean attribute values', {
+  dom: () => html`<button disabled=${true}></button>`,
+  expected: {
+    name: 'BUTTON',
+    attr: 'disabled',
+  }
+});
+
+it('should support boolean attribute values', {
+  dom: () => html`<button disabled=${false}></button>`,
+  expected: {
+    name: 'BUTTON',
+  }
+});
+
+it('should do many interpolations inside both attribute name and value', {
+  dom: () => html`<div ${'f'}-${'o'}-${'o'}=${'b'}-${'a'}-${'r'}></div>`,
+  expected: {
+    name: 'DIV',
+    attr: 'f-o-o=b-a-r',
+  }
+});
+
 it('should interpolate multiple attribute names', {
   dom: () => html`<div ${'w' + '1'}=bar ${'w' + '2'}=baz></div>`,
   expected: {
