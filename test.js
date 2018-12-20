@@ -132,12 +132,45 @@ it('should properly handle document fragment nesting', {
   }
 });
 
-it('should interpolate class names', {
+it('should interpolate attribute names', {
+  dom: () => html`<div ${'w' + 'oo'}=bar></div>`,
+  expected: {
+    name: 'DIV',
+    attr: 'woo=bar',
+  }
+});
+
+it('should interpolate multiple attribute names', {
+  dom: () => html`<div ${'w' + '1'}=bar ${'w' + '2'}=baz></div>`,
+  expected: {
+    name: 'DIV',
+    attr: 'w1=bar w2=baz',
+  }
+});
+
+it('should interpolate attribute values', {
   dom: () => html`<div class=${1 + 1}-bar></div>`,
   expected: {
     name: 'DIV',
     attr: 'class=2-bar',
   }
+});
+
+it('should work with arrays', {
+  dom: () => html`<ul>${[1,2].map(e => html`<li>${e}</li>`)}`,
+  expected: {
+    name: 'UL',
+    children: [
+      {
+        name: 'LI',
+        children: ['1'],
+      },
+      {
+        name: 'LI',
+        children: ['2'],
+      },
+    ],
+  },
 });
 
 new Reporter(testRunner, path.join(__dirname));
