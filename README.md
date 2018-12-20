@@ -55,8 +55,6 @@ textNode.$; // undefined - there's no querySelector.
 
 `zhtml` aggressively drops whitespace-only text nodes.
 - *PRO*: Markup can be alined with indentation and no surprising text nodes appear
-- *CONS*: Certain cases may be too aggressive, e.g. ``html`<span>  ${0}</span>``` will drop
-  whitespace before 0.
 
 ```js
 function generateSomething() {
@@ -68,6 +66,12 @@ function generateSomething() {
     </article>
   `;
 }
+```
+
+- *CONS*: Certain cases may be too aggressive, e.g. dropping whitespace text nodes around interpolations. This use case is **controversial** but intentional.
+
+```js
+html`<span>  ${0}  </span>` // will result in <span>0</span>
 ```
 
 ## Performance
