@@ -11,7 +11,7 @@ function dumpDOM(node) {
     result.name = node.tagName;
   let attributes = [];
   for (const a of (node.attributes || []))
-    attributes.push(a.name + '=' + a.value);
+    attributes.push(a.name + (a.value !== '' ? '=' + a.value : ''));
   if (attributes.length)
     result.attr = attributes.join(' ');
 

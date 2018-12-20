@@ -99,8 +99,6 @@ it('should work with nested HMTL templates', {
         name: 'BAR',
         children: ['baz'],
       },
-      //TODO: this text node should not be.
-      ''
     ],
   },
 });
@@ -126,8 +124,6 @@ it('should properly handle document fragment nesting', {
         name: 'B',
         children: ['4'],
       },
-      //TODO: this text node should not be.
-      ''
     ],
   }
 });
