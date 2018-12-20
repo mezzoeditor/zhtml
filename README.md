@@ -50,11 +50,12 @@ const textNode = html`yo`;
 textNode.$; // undefined - there's no querySelector.
 ```
 
+
 ## Text Nodes
 
 `zhtml` aggressively drops whitespace-only text nodes.
 - *PRO*: Markup can be alined with indentation and no surprising text nodes appear
-- *CONS*: Certain cases may be too aggressive, e.g. `html\`<span>  ${0}</span>\`` will drop
+- *CONS*: Certain cases may be too aggressive, e.g. ``html`<span>  ${0}</span>``` will drop
   whitespace before 0.
 
 ```js
