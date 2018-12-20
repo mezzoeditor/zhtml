@@ -1,4 +1,4 @@
-# ZHTML
+# ZHTML [![Build Status](https://api.cirrus-ci.com/github/aslushnikov/zhtml.svg)](https://cirrus-ci.com/github/aslushnikov/zhtml)
 
 [Demo](https://aslushnikov.github.io/zhtml/demo.html)
 
@@ -114,6 +114,10 @@ for (let i = 0; i < 10000; ++i) {
 console.timeEnd('zhtml');
 
 ```
+
+## Testing
+
+This is tested with [Cirrus CI](https://cirrus-ci.org/) on both Chromium and Firefox using [Puppeteer](https://github.com/GOogleChrome/puppeteer/).
 
 ## Inspiration
 
