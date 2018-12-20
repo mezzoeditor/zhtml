@@ -62,6 +62,7 @@ function prepareTemplate(strings) {
       for (let i = 1; i < texts.length; ++i) {
         const span = document.createElement('span');
         node.parentNode.insertBefore(span, anchor);
+        node.parentNode.insertBefore(document.createTextNode(texts[i]), anchor);
         subs.push({
           node: span,
           type: 'replace-node',

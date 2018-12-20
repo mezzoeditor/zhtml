@@ -168,6 +168,26 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
+    it('should retain textnodes around interpolation', {
+      dom: () => html`(${'foo'})`,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+        children: [
+          '(', 'foo', ')'
+        ]
+      }
+    });
+
+    it('should not have empty nodes in-between interpolations', {
+      dom: () => html`${'foo'}${'bar'}${'baz'}`,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+        children: [
+          'foo', 'bar', 'baz'
+        ]
+      }
+    });
+
     it('should work with arrays', {
       dom: () => html`<ul>${[1,2].map(e => html`<li>${e}</li>`)}`,
       expected: {
