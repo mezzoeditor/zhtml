@@ -1,5 +1,7 @@
 # ZHTML
 
+[Demo](https://aslushnikov.github.io/zhtml/demo.html)
+
 ## Installation
 
 1. Copy `zhmlt.js` to your project.
@@ -50,8 +52,10 @@ textNode.$; // undefined - there's no querySelector.
 
 ## Text Nodes
 
-`zhtml` drops empty text nodes where possible, so markup can be alined with
-indentation.
+`zhtml` aggressively drops whitespace-only text nodes.
+- *PRO*: Markup can be alined with indentation and no surprising text nodes appear
+- *CONS*: Certain cases may be too aggressive, e.g. `html\`<span>  ${0}</span>\`` will drop
+  whitespace before 0.
 
 ```js
 function generateSomething() {

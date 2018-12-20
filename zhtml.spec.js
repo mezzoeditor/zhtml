@@ -188,6 +188,16 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
+    it('[controversial] should drop whitespace textnode before interpolation', {
+      dom: () => html`<span>  ${0}  </span>`,
+      expected: {
+        name: 'SPAN',
+        children: [
+          '0'
+        ]
+      }
+    });
+
     it('should work with arrays', {
       dom: () => html`<ul>${[1,2].map(e => html`<li>${e}</li>`)}`,
       expected: {
