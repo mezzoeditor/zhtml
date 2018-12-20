@@ -1,0 +1,28 @@
+<script type=module>
+import {html} from './html.js';
+function dumpDOM(node) {
+  if (node.nodeType === Element.TEXT_NODE)
+    return node.textContent;
+
+  const result = {};
+  if (node.nodeType === Element.DOCUMENT_FRAGMENT_NODE)
+    result.name = 'DOCUMENT_FRAGMENT';
+  else
+    result.name = node.tagName;
+  let attributes = [];
+  for (const a of (node.attributes || []))
+    attributes.push(a.name + '=' + a.value);
+  if (attributes.length)
+    result.attr = attributes.join(' ');
+
+  const children = [];
+  for (const child of node.childNodes)
+    children.push(dumpDOM(child));
+  if (children.length)
+    result.children = children;
+  return result;
+}
+
+window.html = html;
+window.dumpDOM = dumpDOM;
+</script>
