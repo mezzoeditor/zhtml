@@ -44,3 +44,36 @@ window.dumpDOM = dumpDOM;
     <code>html`&lt;a&gt;`</code>
   </li>
 </ol>
+
+<h4>Perf benchmark</h4>
+<pre>
+console.time('innerHTML');
+for (let i = 0; i &lt; 10000; ++i) {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      &lt;div&gt;
+        &lt;span style='color: red'&gt;H&lt;/span&gt;
+        &lt;span style='color: green'&gt;E&lt;/span&gt;
+        &lt;span style='color: blue'&gt;L&lt;/span&gt;
+        &lt;span style='color: red'&gt;L&lt;/span&gt;
+        &lt;span style='color: green'&gt;O&lt;/span&gt;
+        &lt;span style='color: blue'&gt; ${i}&lt;/span&gt;
+      &lt;/div&gt;
+    `
+}
+console.timeEnd('innerHTML')
+console.time('zhtml');
+for (let i = 0; i &lt; 10000; ++i) {
+    const div = html`
+      &lt;div&gt;
+        &lt;span style='color: red'&gt;H&lt;/span&gt;
+        &lt;span style='color: green'&gt;E&lt;/span&gt;
+        &lt;span style='color: blue'&gt;L&lt;/span&gt;
+        &lt;span style='color: red'&gt;L&lt;/span&gt;
+        &lt;span style='color: green'&gt;O&lt;/span&gt;
+        &lt;span style='color: blue'&gt; ${i}&lt;/span&gt;
+      &lt;/div&gt;
+    `
+}
+console.timeEnd('zhtml');
+</pre>
