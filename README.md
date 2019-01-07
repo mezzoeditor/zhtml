@@ -1,6 +1,6 @@
 # ZHTML [![Build Status](https://api.cirrus-ci.com/github/aslushnikov/zhtml.svg)](https://cirrus-ci.com/github/aslushnikov/zhtml)
 
-[Demo](https://aslushnikov.github.io/zhtml/demo.html)
+[Demo](https://mezzoeditor.github.io/zhtml/demo.html)
 
 ## Installation
 
