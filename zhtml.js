@@ -52,19 +52,12 @@ function prepareTemplate(strings) {
       for (let i = 0; i < node.attributes.length; i++) {
         const name = node.attributes[i].name;
 
-        const isNameMatching = MARKER_REGEX.test(name);
-        const isValueMatching = MARKER_REGEX.test(node.attributes[i].value);
+        const nameParts = name.split(MARKER_REGEX);
+        const valueParts = node.attributes[i].value.split(MARKER_REGEX);
+        const isSimpleValue = valueParts.length === 2 && valueParts[0] === '' && valueParts[1] === '';
 
-        let type = null;
-        if (isNameMatching && isValueMatching)
-          type = 'attribute-all';
-        else if (isNameMatching)
-          type = 'attribute-name';
-        else if (isValueMatching)
-          type = 'attribute-value';
-
-        if (type)
-          subs.push({ node, type, attr: name});
+        if (nameParts.length > 1 || valueParts.length > 1)
+          subs.push({ node, nameParts, valueParts, isSimpleValue, attr: name});
       }
     } else if (node.nodeType === Node.TEXT_NODE && MARKER_REGEX.test(node.data)) {
       const texts = node.data.split(MARKER_REGEX);
@@ -123,7 +116,7 @@ function renderTemplate(template, subs, values) {
     node.removeAttribute('z-framework-marked-node');
 
   let valueIndex = 0;
-  const interpolateText= (texts) => {
+  const interpolateText = (texts) => {
     let newText = texts[0];
     for (let i = 1; i < texts.length; ++i) {
       newText += values[valueIndex++];
@@ -135,20 +128,9 @@ function renderTemplate(template, subs, values) {
   for (const sub of subs) {
     const node = boundElements[sub.nodeIndex];
     if (sub.attr) {
-      const attribute = node.attributes[sub.attr];
-      let name = attribute.name;
-      let value = attribute.value;
-      node.removeAttribute(name);
-      if (sub.type === 'attribute-all' || sub.type === 'attribute-name')
-        name = interpolateText(name.split(MARKER_REGEX));
-      if (sub.type === 'attribute-all' || sub.type === 'attribute-value') {
-        const texts = value.split(MARKER_REGEX);
-        if (texts.length === 2 && texts[0] === '' && texts[1] === '') {
-          value = values[valueIndex++];
-        } else {
-          value = interpolateText(value.split(MARKER_REGEX));
-        }
-      }
+      node.removeAttribute(sub.attr);
+      const name = interpolateText(sub.nameParts);
+      const value = sub.isSimpleValue ? values[valueIndex++] : interpolateText(sub.valueParts);
       if (BOOLEAN_ATTRS.has(name))
         node.toggleAttribute(name, !!value);
       else
