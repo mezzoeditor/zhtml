@@ -1,4 +1,4 @@
-# ZHTML [![Build Status](https://api.cirrus-ci.com/github/aslushnikov/zhtml.svg)](https://cirrus-ci.com/github/aslushnikov/zhtml)
+# ZHTML [![Build Status](https://api.cirrus-ci.com/github/mezzoeditor/zhtml.svg)](https://cirrus-ci.com/github/mezzoeditor/zhtml)
 
 [Demo](https://mezzoeditor.github.io/zhtml/demo.html)
 
