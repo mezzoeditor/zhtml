@@ -4,6 +4,13 @@
  */
 const templateCache = new Map();
 
+const BOOLEAN_ATTRS = new Set([
+  'async', 'autofocus', 'autoplay', 'checked', 'contenteditable', 'controls',
+  'default', 'defer', 'disabled', 'formNoValidate', 'frameborder', 'hidden',
+  'ismap', 'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate',
+  'open', 'readonly', 'required', 'reversed', 'scoped', 'selected', 'typemustmatch',
+]);
+
 export function html(strings, ...values) {
   let cache = templateCache.get(strings);
   if (!cache) {
@@ -131,7 +138,6 @@ function renderTemplate(template, subs, values) {
       const attribute = node.attributes[sub.attr];
       let name = attribute.name;
       let value = attribute.value;
-      let maybeHandleBooleanValue = false;
       node.removeAttribute(name);
       if (sub.type === 'attribute-all' || sub.type === 'attribute-name')
         name = interpolateText(name.split(MARKER_REGEX));
@@ -139,13 +145,12 @@ function renderTemplate(template, subs, values) {
         const texts = value.split(MARKER_REGEX);
         if (texts.length === 2 && texts[0] === '' && texts[1] === '') {
           value = values[valueIndex++];
-          maybeHandleBooleanValue = true;
         } else {
-          value = interpolateText(texts);
+          value = interpolateText(value.split(MARKER_REGEX));
         }
       }
-      if (maybeHandleBooleanValue && (typeof value === 'boolean' || (value instanceof Boolean)))
-        node.toggleAttribute(name, value);
+      if (BOOLEAN_ATTRS.has(name))
+        node.toggleAttribute(name, !!value);
       else
         node.setAttribute(name, value);
     } else if (sub.type === 'replace-node') {

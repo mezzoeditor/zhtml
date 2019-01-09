@@ -141,7 +141,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should support boolean attribute values', {
+    it('should support boolean attribute value', {
       dom: () => html`<button disabled=${true}></button>`,
       expected: {
         name: 'BUTTON',
@@ -149,8 +149,16 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should support boolean attribute values', {
-      dom: () => html`<button disabled=${false}></button>`,
+    it('should support truthy boolean attribute value', {
+      dom: () => html`<button disabled=${'yes'}></button>`,
+      expected: {
+        name: 'BUTTON',
+        attr: 'disabled',
+      }
+    });
+
+    it('should support falsy boolean attribute value', {
+      dom: () => html`<button disabled=${0}></button>`,
       expected: {
         name: 'BUTTON',
       }
