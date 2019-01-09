@@ -18,7 +18,7 @@ export function html(strings, ...values) {
   return node;
 }
 
-const SPACE_REGEX = /^\s*$/;
+const SPACE_REGEX = /^\s*\n\s*$/;
 const MARKER_REGEX = /z-t-e-\d+-m-p-l-a-t-e/;
 
 function prepareTemplate(strings) {
@@ -72,13 +72,9 @@ function prepareTemplate(strings) {
           type: 'replace-node',
         });
       }
-      if ((!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) &&
-          SPACE_REGEX.test(node.data))
+      if (shouldRemoveTextNode(node))
         emptyTextNodes.push(node);
-    } else if (node.nodeType === Node.TEXT_NODE &&
-        (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) &&
-        (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) &&
-        SPACE_REGEX.test(node.data)) {
+    } else if (node.nodeType === Node.TEXT_NODE && shouldRemoveTextNode(node)) {
       emptyTextNodes.push(node);
     }
   }
@@ -97,6 +93,14 @@ function prepareTemplate(strings) {
     sub.nodeIndex = index;
   }
   return {template, subs};
+}
+
+function shouldRemoveTextNode(node) {
+  if (!node.previousSibling && !node.nextSibling)
+    return !node.data.length;
+  return (!node.previousSibling || node.previousSibling.nodeType === Node.ELEMENT_NODE) &&
+         (!node.nextSibling || node.nextSibling.nodeType === Node.ELEMENT_NODE) &&
+         (!node.data.length || SPACE_REGEX.test(node.data));
 }
 
 function renderTemplate(template, subs, values) {

@@ -53,8 +53,8 @@ textNode.$; // undefined - there's no querySelector.
 
 ## Text Nodes
 
-`zhtml` aggressively drops whitespace-only text nodes.
-- *PRO*: Markup can be alined with indentation and no surprising text nodes appear
+`zhtml` drops whitespace-only text nodes that have one or more newline character.
+This way markup can be alined with indentation and no surprising text nodes appear
 
 ```js
 function generateSomething() {
@@ -68,10 +68,14 @@ function generateSomething() {
 }
 ```
 
-- *CONS*: Certain cases may be too aggressive, e.g. dropping whitespace text nodes around interpolations. This use case is **controversial** but intentional.
+If such text node is absolutely needed, it can be surrounded with any tag: text node is not
+removed if it's not zero-length and it's the only child of its parent.
 
 ```js
-html`<span>  ${0}  </span>` // will result in <span>0</span>
+html`
+  ${0}<span>
+  </span>${1}
+`;
 ```
 
 ## Performance

@@ -45,8 +45,11 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should drop empty text nodes', {
-      dom: () => html`  <span> A </span>   <span>   B  </span>  `,
+    it('should drop empty text nodes with newlines', {
+      dom: () => html`
+        <span> A </span>
+        <span>   B  </span>
+      `,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
         children: [
@@ -59,6 +62,15 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
             children: ['   B  '],
           },
         ],
+      }
+    });
+
+    it('should keep text node if it is the only child', {
+      dom: () => html`<span>
+        </span>`,
+      expected: {
+        name: 'SPAN',
+        children: ['\n        '],
       }
     });
 
@@ -188,12 +200,22 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('[controversial] should drop whitespace textnode before interpolation', {
+    it('should not drop whitespace textnode before interpolation', {
       dom: () => html`<span>  ${0}  </span>`,
       expected: {
         name: 'SPAN',
         children: [
-          '0'
+          '  ', '0', '  '
+        ]
+      }
+    });
+
+    it('should not drop whitespace textnodes between interpolations', {
+      dom: () => html`<span>${'Hello'} ${'world'}</span>`,
+      expected: {
+        name: 'SPAN',
+        children: [
+          'Hello', ' ', 'world'
         ]
       }
     });
