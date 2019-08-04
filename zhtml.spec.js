@@ -228,6 +228,23 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
+    xit('should work with table rows', {
+      dom: () => html`<table><tr>${'<td>Hello</td>'}</tr></table>`,
+      expected: {
+        name: 'TABLE',
+        children: [{
+          name: 'TBODY',
+          children: [{
+            name: 'TR',
+            children: [{
+              name: 'TD',
+              children: ['Hello'],
+            }],
+          }]
+        }]
+      }
+    });
+
     it('should work with arrays', {
       dom: () => html`<ul>${[1,2].map(e => html`<li>${e}</li>`)}`,
       expected: {
