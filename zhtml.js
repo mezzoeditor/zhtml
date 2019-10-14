@@ -1,5 +1,5 @@
 /**
- * ZHTML 1.1.0
+ * ZHTML 1.1.1
  * https://github.com/mezzoeditor/zhtml
  */
 const templateCache = new Map();
