@@ -228,6 +228,18 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
+    it('should work with array substitution with no other nodes', {
+      dom: () => html`${[document.createElement('div'), document.createElement('span')]}`,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+        children: [{
+          name: 'DIV',
+        }, {
+          name: 'SPAN',
+        }]
+      }
+    });
+
     xit('should work with table rows', {
       dom: () => html`<table><tr>${'<td>Hello</td>'}</tr></table>`,
       expected: {

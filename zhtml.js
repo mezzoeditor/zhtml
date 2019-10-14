@@ -106,7 +106,7 @@ function shouldRemoveTextNode(node) {
 function renderTemplate(template, subs, values) {
   let node = null;
   const content = template.ownerDocument.importNode(template.content, true);
-  if (content.firstChild === content.lastChild)
+  if (content.firstChild === content.lastChild && !content.firstChild.hasAttribute('z-framework-marked-node'))
     node = content.firstChild;
   else
     node = content;
