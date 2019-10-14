@@ -1,5 +1,5 @@
 /**
- * ZHTML 1.1.1
+ * ZHTML 1.1.2
  * https://github.com/mezzoeditor/zhtml
  */
 const templateCache = new Map();
@@ -106,10 +106,6 @@ function shouldRemoveTextNode(node) {
 function renderTemplate(template, subs, values) {
   let node = null;
   const content = template.ownerDocument.importNode(template.content, true);
-  if (content.firstChild === content.lastChild && !content.firstChild.hasAttribute('z-framework-marked-node'))
-    node = content.firstChild;
-  else
-    node = content;
 
   const boundElements = Array.from(content.querySelectorAll('[z-framework-marked-node]'));
   for (const node of boundElements)
@@ -149,6 +145,5 @@ function renderTemplate(template, subs, values) {
       }
     }
   }
-
-  return node;
+  return content.firstChild === content.lastChild ? content.firstChild : content;
 }
