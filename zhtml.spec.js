@@ -5,7 +5,7 @@ const {expect} = new Matchers();
 module.exports.addTests = function addTests(testRunner, puppeteer, product) {
   const it = runUnitTest.bind(null, testRunner.it);
   const xit = runUnitTest.bind(null, testRunner.xit);
-  const fit = runUnitTest.bind(null, testRunner.fit);
+  const fit = product.toLowerCase() === 'chromium' ? runUnitTest.bind(null, testRunner.fit) : it;
 
   testRunner.describe(product, () => {
     testRunner.beforeAll(async state => {
@@ -238,6 +238,17 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
           name: 'SPAN',
         }]
       }
+    });
+
+    it('should drop "undefined" and "null" node values', {
+      dom: () => html`<span>${undefined}</span><div>${null}</div>`,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+        children: [
+          { name: 'SPAN' },
+          { name: 'DIV' },
+        ],
+      },
     });
 
     xit('should work with table rows', {

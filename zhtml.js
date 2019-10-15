@@ -133,7 +133,9 @@ function renderTemplate(template, subs, values) {
         node.setAttribute(name, value);
     } else if (sub.type === 'replace-node') {
       const replacement = values[valueIndex++];
-      if (Array.isArray(replacement)) {
+      if (replacement === undefined || replacement === null) {
+        node.remove();
+      } else if (Array.isArray(replacement)) {
         const fragment = document.createDocumentFragment();
         for (const node of replacement)
           fragment.appendChild(node);
