@@ -125,8 +125,13 @@ function renderTemplate(template, subs, values) {
     const node = boundElements[sub.nodeIndex];
     if (sub.attr) {
       node.removeAttribute(sub.attr);
-      const name = interpolateText(sub.nameParts);
-      const value = interpolateText(sub.valueParts);
+      let name = interpolateText(sub.nameParts);
+      let value = interpolateText(sub.valueParts);
+      if (name.includes('=') && !value) {
+        const index = name.indexOf('=');
+        value = name.substring(index + 1);
+        name = name.substring(0, index);
+      }
       if (BOOLEAN_ATTRS.has(name))
         node.toggleAttribute(name, !!value);
       else

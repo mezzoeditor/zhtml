@@ -189,6 +189,14 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
+    it('should interpolate whole attribute key=value pairs', {
+      dom: () => html`<div ${'class=foo'}></div>`,
+      expected: {
+        name: 'DIV',
+        attr: 'class=foo',
+      }
+    });
+
     it('should retain textnodes around interpolation', {
       dom: () => html`(${'foo'})`,
       expected: {
