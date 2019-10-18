@@ -80,6 +80,18 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       expected: `what's up`,
     });
 
+    it('should return empty document fragment when passed an empty string', {
+      dom: () => html``,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+      },
+    });
+
+    it('should return text node when passed a  string with a space', {
+      dom: () => html` `,
+      expected: ' ',
+    });
+
     it('should work with nested HMTL templates', {
       dom: () => html`<foo>${html`<bar>baz</bar>`}</foo>`,
       expected: {

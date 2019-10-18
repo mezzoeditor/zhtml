@@ -102,9 +102,7 @@ function shouldRemoveTextNode(node) {
 }
 
 function renderTemplate(template, subs, values) {
-  let node = null;
   const content = template.ownerDocument.importNode(template.content, true);
-
   const boundElements = Array.from(content.querySelectorAll('[z-framework-marked-node]'));
   for (const node of boundElements)
     node.removeAttribute('z-framework-marked-node');
@@ -154,5 +152,5 @@ function renderTemplate(template, subs, values) {
       }
     }
   }
-  return content.firstChild === content.lastChild ? content.firstChild : content;
+  return content.firstChild && content.firstChild === content.lastChild ? content.firstChild : content;
 }
