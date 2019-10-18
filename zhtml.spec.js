@@ -260,6 +260,21 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       },
     });
 
+    it('should drop attribute with name "undefined" or "null"', {
+      dom: () => html`<div ${undefined} ${null}=foo></div>`,
+      expected: {
+        name: 'DIV',
+      }
+    });
+
+    it('should drop both key and value when dropping attribute', {
+      dom: () => html`<div ${null}=${'foo'} bar=${'baz'}></div>`,
+      expected: {
+        name: 'DIV',
+        attr: 'bar=baz',
+      }
+    });
+
     xit('should work with table rows', {
       dom: () => html`<table><tr>${'<td>Hello</td>'}</tr></table>`,
       expected: {
