@@ -54,10 +54,8 @@ function prepareTemplate(strings) {
 
         const nameParts = name.split(MARKER_REGEX);
         const valueParts = node.attributes[i].value.split(MARKER_REGEX);
-        const isSimpleValue = valueParts.length === 2 && valueParts[0] === '' && valueParts[1] === '';
-
         if (nameParts.length > 1 || valueParts.length > 1)
-          subs.push({ node, nameParts, valueParts, isSimpleValue, attr: name});
+          subs.push({ node, nameParts, valueParts, attr: name});
       }
     } else if (node.nodeType === Node.TEXT_NODE && MARKER_REGEX.test(node.data)) {
       const texts = node.data.split(MARKER_REGEX);
@@ -113,6 +111,8 @@ function renderTemplate(template, subs, values) {
 
   let valueIndex = 0;
   const interpolateText = (texts) => {
+    if (texts.length === 2 && texts[0] === '' && texts[1] === '')
+      return values[valueIndex++];
     let newText = texts[0];
     for (let i = 1; i < texts.length; ++i) {
       newText += values[valueIndex++];
@@ -126,7 +126,7 @@ function renderTemplate(template, subs, values) {
     if (sub.attr) {
       node.removeAttribute(sub.attr);
       const name = interpolateText(sub.nameParts);
-      const value = sub.isSimpleValue ? values[valueIndex++] : interpolateText(sub.valueParts);
+      const value = interpolateText(sub.valueParts);
       if (BOOLEAN_ATTRS.has(name))
         node.toggleAttribute(name, !!value);
       else

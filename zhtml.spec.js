@@ -11,6 +11,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
     testRunner.beforeAll(async state => {
       state.browser = await puppeteer.launch();
       state.page = await state.browser.newPage();
+      state.page.on('console', msg => console.log(msg.text()));
       await state.page.goto(`${state.server.PREFIX}/demo.html`);
     });
 
