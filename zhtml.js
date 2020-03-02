@@ -1,5 +1,5 @@
 /**
- * ZHTML 1.2.0
+ * ZHTML 1.3.0
  * https://github.com/mezzoeditor/zhtml
  */
 const templateCache = new Map();
@@ -138,7 +138,7 @@ function renderTemplate(template, subs, values) {
       }
     } else if (sub.type === 'replace-node') {
       const replacement = values[valueIndex++];
-      if (replacement === undefined || replacement === null) {
+      if (replacement === undefined || replacement === null || replacement === false) {
         node.remove();
       } else if (Array.isArray(replacement)) {
         const fragment = document.createDocumentFragment();

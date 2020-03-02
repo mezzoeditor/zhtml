@@ -272,6 +272,13 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       },
     });
 
+    it('should drop "false" node value', {
+      dom: () => html`<span>${false}</span>`,
+      expected: {
+        name: 'SPAN',
+      },
+    });
+
     it('should drop attribute with name "undefined" or "null"', {
       dom: () => html`<div ${undefined} ${null}=foo></div>`,
       expected: {
