@@ -271,6 +271,12 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
         ],
       },
     });
+    it('should drop empty array node values', {
+      dom: () => html`<span>${[]}</span>`,
+      expected: {
+        name: 'SPAN',
+      },
+    });
 
     it('should drop "false" node value', {
       dom: () => html`<span>${false}</span>`,
