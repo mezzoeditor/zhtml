@@ -3,9 +3,11 @@ const {Matchers} = require('@pptr/testrunner');
 const {expect} = new Matchers();
 
 module.exports.addTests = function addTests(testRunner, puppeteer, product) {
-  const it = runUnitTest.bind(null, testRunner.it);
-  const xit = runUnitTest.bind(null, testRunner.xit);
-  const fit = product.toLowerCase() === 'chromium' ? runUnitTest.bind(null, testRunner.fit) : it;
+  const {it, xit} = testRunner;
+  const fit = product.toLowerCase() === 'chromium' ? testRunner.fit : it;
+  const itHTML = runUnitTest.bind(null, testRunner.it);
+  const xitHTML = runUnitTest.bind(null, testRunner.xit);
+  const fitHTML = product.toLowerCase() === 'chromium' ? runUnitTest.bind(null, testRunner.fit) : it;
 
   testRunner.describe(product, () => {
     testRunner.beforeAll(async state => {
@@ -21,7 +23,17 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       state.browser = null;
     });
 
-    it('should work', {
+    it('should add click listener', async ({page}) => {
+      await page.evaluate(() => {
+        window.__CLICKED = false;
+        document.body.append(html`<div id=clickme onclick=${() => window.__CLICKED = true}>CLICKME</div>`);
+      });
+      expect(await page.evaluate(() => window.__CLICKED)).toBe(false);
+      await page.click('#clickme');
+      expect(await page.evaluate(() => window.__CLICKED)).toBe(true);
+    });
+
+    itHTML('should work', {
       dom: () => html`<div>test</div>`,
       expected: {
         name: 'DIV',
@@ -29,7 +41,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should return DocumentFragment with many children', {
+    itHTML('should return DocumentFragment with many children', {
       dom: () => html`<b>foo</b><b>bar</b>`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -46,7 +58,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should drop empty text nodes with newlines', {
+    itHTML('should drop empty text nodes with newlines', {
       dom: () => html`
         <span> A </span>
         <span>   B  </span>
@@ -66,7 +78,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should keep text node if it is the only child', {
+    itHTML('should keep text node if it is the only child', {
       dom: () => html`<span>
         </span>`,
       expected: {
@@ -75,24 +87,24 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should return just text nodes', {
+    itHTML('should return just text nodes', {
       dom: () => html`what's up`,
       expected: `what's up`,
     });
 
-    it('should return empty document fragment when passed an empty string', {
+    itHTML('should return empty document fragment when passed an empty string', {
       dom: () => html``,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
       },
     });
 
-    it('should return text node when passed a  string with a space', {
+    itHTML('should return text node when passed a  string with a space', {
       dom: () => html` `,
       expected: ' ',
     });
 
-    it('should work with nested HMTL templates', {
+    itHTML('should work with nested HMTL templates', {
       dom: () => html`<foo>${html`<bar>baz</bar>`}</foo>`,
       expected: {
         name: 'FOO',
@@ -105,7 +117,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       },
     });
 
-    it('should properly handle document fragment nesting', {
+    itHTML('should properly handle document fragment nesting', {
       dom: () => html`${html`<b>1</b><b>2</b>`}${html`<b>3</b><b>4</b>`}`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -130,7 +142,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should interpolate attribute names', {
+    itHTML('should interpolate attribute names', {
       dom: () => html`<div ${'w' + 'oo'}=bar></div>`,
       expected: {
         name: 'DIV',
@@ -138,7 +150,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should do many interpolations inside attribute name', {
+    itHTML('should do many interpolations inside attribute name', {
       dom: () => html`<div ${'f'}-${'o'}-${'o'}=bar></div>`,
       expected: {
         name: 'DIV',
@@ -146,7 +158,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should do many interpolations inside attribute value', {
+    itHTML('should do many interpolations inside attribute value', {
       dom: () => html`<div foo=${'b'}-${'a'}-${'r'}></div>`,
       expected: {
         name: 'DIV',
@@ -154,7 +166,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should support boolean attribute value', {
+    itHTML('should support boolean attribute value', {
       dom: () => html`<button disabled=${true}></button>`,
       expected: {
         name: 'BUTTON',
@@ -162,7 +174,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should support truthy boolean attribute value', {
+    itHTML('should support truthy boolean attribute value', {
       dom: () => html`<button disabled=${'yes'}></button>`,
       expected: {
         name: 'BUTTON',
@@ -170,14 +182,14 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should support falsy boolean attribute value', {
+    itHTML('should support falsy boolean attribute value', {
       dom: () => html`<button disabled=${0}></button>`,
       expected: {
         name: 'BUTTON',
       }
     });
 
-    it('should do many interpolations inside both attribute name and value', {
+    itHTML('should do many interpolations inside both attribute name and value', {
       dom: () => html`<div ${'f'}-${'o'}-${'o'}=${'b'}-${'a'}-${'r'}></div>`,
       expected: {
         name: 'DIV',
@@ -185,7 +197,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should interpolate multiple attribute names', {
+    itHTML('should interpolate multiple attribute names', {
       dom: () => html`<div ${'w' + '1'}=bar ${'w' + '2'}=baz></div>`,
       expected: {
         name: 'DIV',
@@ -193,7 +205,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should interpolate attribute values', {
+    itHTML('should interpolate attribute values', {
       dom: () => html`<div class=${1 + 1}-bar></div>`,
       expected: {
         name: 'DIV',
@@ -201,7 +213,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should interpolate whole attribute key=value pairs', {
+    itHTML('should interpolate whole attribute key=value pairs', {
       dom: () => html`<div ${'class=foo'}></div>`,
       expected: {
         name: 'DIV',
@@ -209,7 +221,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should retain textnodes around interpolation', {
+    itHTML('should retain textnodes around interpolation', {
       dom: () => html`(${'foo'})`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -219,7 +231,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should not have empty nodes in-between interpolations', {
+    itHTML('should not have empty nodes in-between interpolations', {
       dom: () => html`${'foo'}${'bar'}${'baz'}`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -229,7 +241,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should not drop whitespace textnode before interpolation', {
+    itHTML('should not drop whitespace textnode before interpolation', {
       dom: () => html`<span>  ${0}  </span>`,
       expected: {
         name: 'SPAN',
@@ -239,7 +251,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should not drop whitespace textnodes between interpolations', {
+    itHTML('should not drop whitespace textnodes between interpolations', {
       dom: () => html`<span>${'Hello'} ${'world'}</span>`,
       expected: {
         name: 'SPAN',
@@ -249,7 +261,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should work with array substitution with no other nodes', {
+    itHTML('should work with array substitution with no other nodes', {
       dom: () => html`${[document.createElement('div'), document.createElement('span')]}`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -261,7 +273,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should drop "undefined" and "null" node values', {
+    itHTML('should drop "undefined" and "null" node values', {
       dom: () => html`<span>${undefined}</span><div>${null}</div>`,
       expected: {
         name: 'DOCUMENT_FRAGMENT',
@@ -271,28 +283,28 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
         ],
       },
     });
-    it('should drop empty array node values', {
+    itHTML('should drop empty array node values', {
       dom: () => html`<span>${[]}</span>`,
       expected: {
         name: 'SPAN',
       },
     });
 
-    it('should drop "false" node value', {
+    itHTML('should drop "false" node value', {
       dom: () => html`<span>${false}</span>`,
       expected: {
         name: 'SPAN',
       },
     });
 
-    it('should drop attribute with name "undefined" or "null"', {
+    itHTML('should drop attribute with name "undefined" or "null"', {
       dom: () => html`<div ${undefined} ${null}=foo></div>`,
       expected: {
         name: 'DIV',
       }
     });
 
-    it('should drop both key and value when dropping attribute', {
+    itHTML('should drop both key and value when dropping attribute', {
       dom: () => html`<div ${null}=${'foo'} bar=${'baz'}></div>`,
       expected: {
         name: 'DIV',
@@ -300,7 +312,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    xit('should work with table rows', {
+    xitHTML('should work with table rows', {
       dom: () => html`<table><tr>${'<td>Hello</td>'}</tr></table>`,
       expected: {
         name: 'TABLE',
@@ -317,7 +329,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
       }
     });
 
-    it('should work with arrays', {
+    itHTML('should work with arrays', {
       dom: () => html`<ul>${[1,2].map(e => html`<li>${e}</li>`)}`,
       expected: {
         name: 'UL',

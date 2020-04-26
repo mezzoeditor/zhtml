@@ -1,5 +1,5 @@
 /**
- * ZHTML 1.3.0
+ * ZHTML 1.4.0
  * https://github.com/mezzoeditor/zhtml
  */
 const templateCache = new Map();
@@ -131,7 +131,9 @@ function renderTemplate(template, subs, values) {
           value = name.substring(index + 1);
           name = name.substring(0, index);
         }
-        if (BOOLEAN_ATTRS.has(name))
+        if (value && typeof value === 'function')
+          node[name] = value;
+        else if (BOOLEAN_ATTRS.has(name))
           node.toggleAttribute(name, !!value);
         else
           node.setAttribute(name, value);
