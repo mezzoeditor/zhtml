@@ -43,6 +43,7 @@ function prepareTemplate(strings) {
   let valueIndex = 0;
   const emptyTextNodes = [];
   const subs = [];
+  const attributesToBeRemoved = [];
   while (walker.nextNode()) {
     const node = walker.currentNode;
     if (node.nodeType === Node.ELEMENT_NODE && MARKER_REGEX.test(node.tagName))
@@ -54,8 +55,15 @@ function prepareTemplate(strings) {
 
         const nameParts = name.split(MARKER_REGEX);
         const valueParts = node.attributes[i].value.split(MARKER_REGEX);
-        if (nameParts.length > 1 || valueParts.length > 1)
-          subs.push({ node, nameParts, valueParts, attr: name});
+        if (nameParts.length > 1 || valueParts.length > 1) {
+          subs.push({
+            node,
+            type: 'attribute',
+            nameParts,
+            valueParts,
+          });
+          attributesToBeRemoved.push({node, name});
+        }
       }
     } else if (node.nodeType === Node.TEXT_NODE && MARKER_REGEX.test(node.data)) {
       const texts = node.data.split(MARKER_REGEX);
@@ -90,6 +98,8 @@ function prepareTemplate(strings) {
     }
     sub.nodeIndex = index;
   }
+  for (const {node, name} of attributesToBeRemoved)
+    node.removeAttribute(name);
   return {template, subs};
 }
 
@@ -121,8 +131,7 @@ function renderTemplate(template, subs, values) {
 
   for (const sub of subs) {
     const node = boundElements[sub.nodeIndex];
-    if (sub.attr) {
-      node.removeAttribute(sub.attr);
+    if (sub.type === 'attribute') {
       let name = interpolateText(sub.nameParts);
       let value = interpolateText(sub.valueParts);
       if (name) {
