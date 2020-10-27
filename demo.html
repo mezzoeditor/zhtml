@@ -1,5 +1,6 @@
 <script type=module>
-import {html} from './zhtml.js';
+import {html, svg} from './zhtml.js';
+
 function dumpDOM(node) {
   if (node.nodeType === Element.TEXT_NODE)
     return node.textContent;
@@ -9,6 +10,8 @@ function dumpDOM(node) {
     result.name = 'DOCUMENT_FRAGMENT';
   else
     result.name = node.tagName;
+  if (node.namespaceURI !== 'http://www.w3.org/1999/xhtml')
+    result.xmlns = node.namespaceURI;
   let attributes = [];
   for (const a of (node.attributes || []))
     attributes.push(a.name + (a.value !== '' ? '=' + a.value : ''));
@@ -24,6 +27,7 @@ function dumpDOM(node) {
 }
 
 window.html = html;
+window.svg = svg;
 window.dumpDOM = dumpDOM;
 </script>
 <h1>ZTHML</h1>

@@ -345,6 +345,26 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
         ],
       },
     });
+
+    itHTML('should work with SVG', {
+      dom: () => svg`<svg>${[1,2].map(e => svg`<circle x=${e * 10} y=${e * 10} r=10></circle>`)}</svg>`,
+      expected: {
+        name: 'svg',
+        xmlns: 'http://www.w3.org/2000/svg',
+        children: [
+          {
+            name: 'circle',
+            xmlns: 'http://www.w3.org/2000/svg',
+            attr: "r=10 x=10 y=10",
+          },
+          {
+            name: 'circle',
+            xmlns: 'http://www.w3.org/2000/svg',
+            attr: "r=10 x=20 y=20",
+          },
+        ],
+      },
+    });
   });
 }
 

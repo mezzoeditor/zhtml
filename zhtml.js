@@ -11,13 +11,21 @@ const BOOLEAN_ATTRS = new Set([
   'open', 'readonly', 'required', 'reversed', 'scoped', 'selected', 'typemustmatch',
 ]);
 
-export function html(strings, ...values) {
+const Namespace = {
+  SVG: 'http://www.w3.org/2000/svg',
+  HTML: 'http://www.w3.org/1999/xhtml',
+};
+
+export const html = taggedTemplateFunction.bind(null, Namespace.HTML);
+export const svg = taggedTemplateFunction.bind(null, Namespace.SVG);
+
+function taggedTemplateFunction(namespace, strings, ...values) {
   let cache = templateCache.get(strings);
   if (!cache) {
-    cache = prepareTemplate(strings);
+    cache = prepareTemplate(namespace, strings);
     templateCache.set(strings, cache);
   }
-  const node = renderTemplate(cache.template, cache.subs, values);
+  const node = renderTemplate(cache.template, cache.subs, cache.namespace, values);
   if (node.querySelector) {
     node.$ = node.querySelector.bind(node);
     node.$$ = node.querySelectorAll.bind(node);
@@ -28,7 +36,7 @@ export function html(strings, ...values) {
 const SPACE_REGEX = /^\s*\n\s*$/;
 const MARKER_REGEX = /z-t-e-\d+-m-p-l-a-t-e/;
 
-function prepareTemplate(strings) {
+function prepareTemplate(namespace, strings) {
   const template = document.createElement('template');
   let html = ''
   for (let i = 0; i < strings.length - 1; ++i) {
@@ -36,6 +44,8 @@ function prepareTemplate(strings) {
     html += `z-t-e-${i}-m-p-l-a-t-e`;
   }
   html += strings[strings.length - 1];
+  if (namespace === Namespace.SVG)
+    html = `<svg xmlns="${Namespace.SVG}">${html}</svg>`;
   template.innerHTML = html;
 
   const walker = template.ownerDocument.createTreeWalker(
@@ -100,7 +110,7 @@ function prepareTemplate(strings) {
   }
   for (const {node, name} of attributesToBeRemoved)
     node.removeAttribute(name);
-  return {template, subs};
+  return {template, subs, namespace};
 }
 
 function shouldRemoveTextNode(node) {
@@ -111,8 +121,10 @@ function shouldRemoveTextNode(node) {
          (!node.data.length || SPACE_REGEX.test(node.data));
 }
 
-function renderTemplate(template, subs, values) {
-  const content = template.ownerDocument.importNode(template.content, true);
+function renderTemplate(template, subs, namespace, values) {
+  let content = template.ownerDocument.importNode(template.content, true);
+  if (namespace === Namespace.SVG)
+    content = content.firstChild;
   const boundElements = Array.from(content.querySelectorAll('[z-framework-marked-node]'));
   for (const node of boundElements)
     node.removeAttribute('z-framework-marked-node');
