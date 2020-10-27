@@ -5,16 +5,16 @@
 ## Installation
 
 1. Copy `zhmlt.js` to your project.
-2. Import `html` function from `zhtml.js`.
+2. Import `html` and `svg` functions from `zhtml.js`.
 
 ```js
-import {html} from './path/to/zhtml.js';
+import {html, svg} from './path/to/zhtml.js';
 ```
 
 ## Usage
 
-`html` function materializes string template into DOM. If string
-template has multiple top-level nodes, `html` will return `DocumentFragment`.
+`html` and `svg` functions materializes string template into DOM. If string
+template has multiple top-level nodes, functions will return `DocumentFragment`.
 
 ```js
 // Create a DIV element.
@@ -23,6 +23,9 @@ const div = html`<div></div>`; // similar to html`<div>`
 const textNode = html`just some text`;
 // This returns DocumentFragment
 const fragment = html`<a>one</a> <a>two</a>`;
+
+// Render SVG circle. Returns element that belongs to the correct namespace URI.
+const circle = svg`<circle cx=200 cy=200 r=100 fill=blue></circle>`;
 ```
 
 `html` supports nested arrays:
