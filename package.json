@@ -11,9 +11,9 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@pptr/testserver": "^0.5.0",
-    "@pptr/testrunner": "^0.7.0",
-    "puppeteer": "^1.11.0",
-    "puppeteer-firefox": "^0.4.2"
+    "@pptr/testrunner": "^0.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "playwright": "^1.5.1"
+  }
 }

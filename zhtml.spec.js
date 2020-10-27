@@ -2,8 +2,9 @@ const {Matchers} = require('@pptr/testrunner');
 
 const {expect} = new Matchers();
 
-module.exports.addTests = function addTests(testRunner, puppeteer, product) {
+module.exports.addTests = function addTests(testRunner, browserType) {
   const {it, xit} = testRunner;
+  const product = browserType.name();
   const fit = product.toLowerCase() === 'chromium' ? testRunner.fit : it;
   const itHTML = runUnitTest.bind(null, testRunner.it);
   const xitHTML = runUnitTest.bind(null, testRunner.xit);
@@ -11,7 +12,7 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
 
   testRunner.describe(product, () => {
     testRunner.beforeAll(async state => {
-      state.browser = await puppeteer.launch();
+      state.browser = await browserType.launch();
       state.page = await state.browser.newPage();
       state.page.on('console', msg => console.log(msg.text()));
       await state.page.goto(`${state.server.PREFIX}/demo.html`);

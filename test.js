@@ -27,8 +27,9 @@ testRunner.afterAll(async({server}) => {
   await server.stop();
 });
 
-require('./zhtml.spec.js').addTests(testRunner, require('puppeteer'), 'Chromium');
-require('./zhtml.spec.js').addTests(testRunner, require('puppeteer-firefox'), 'Firefox');
+require('./zhtml.spec.js').addTests(testRunner, require('playwright').chromium);
+require('./zhtml.spec.js').addTests(testRunner, require('playwright').firefox);
+require('./zhtml.spec.js').addTests(testRunner, require('playwright').webkit);
 
 new Reporter(testRunner, path.join(__dirname));
 testRunner.run();
