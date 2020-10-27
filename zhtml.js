@@ -123,8 +123,13 @@ function shouldRemoveTextNode(node) {
 
 function renderTemplate(template, subs, namespace, values) {
   let content = template.ownerDocument.importNode(template.content, true);
-  if (namespace === Namespace.SVG)
-    content = content.firstChild;
+  if (namespace === Namespace.SVG) {
+    const svgWrap = content.firstChild;
+    const fragment = document.createDocumentFragment();
+    for (const child of [...svgWrap.childNodes])
+      fragment.appendChild(child);
+    content = fragment;
+  }
   const boundElements = Array.from(content.querySelectorAll('[z-framework-marked-node]'));
   for (const node of boundElements)
     node.removeAttribute('z-framework-marked-node');

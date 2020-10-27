@@ -347,6 +347,23 @@ module.exports.addTests = function addTests(testRunner, puppeteer, product) {
     });
 
     itHTML('should work with SVG', {
+      dom: () => svg`<circle></circle><rect></rect>`,
+      expected: {
+        name: 'DOCUMENT_FRAGMENT',
+        children: [
+          {
+            name: 'circle',
+            xmlns: 'http://www.w3.org/2000/svg',
+          },
+          {
+            name: 'rect',
+            xmlns: 'http://www.w3.org/2000/svg',
+          },
+        ],
+      },
+    });
+
+    itHTML('should compose SVG', {
       dom: () => svg`<svg>${[1,2].map(e => svg`<circle x=${e * 10} y=${e * 10} r=10></circle>`)}</svg>`,
       expected: {
         name: 'svg',
