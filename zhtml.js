@@ -146,6 +146,7 @@ function renderTemplate(template, subs, namespace, values) {
     return newText;
   }
 
+  const onzrenderCallbacks = [];
   for (const sub of subs) {
     const node = boundElements[sub.nodeIndex];
     if (sub.type === 'attribute') {
@@ -157,7 +158,9 @@ function renderTemplate(template, subs, namespace, values) {
           value = name.substring(index + 1);
           name = name.substring(0, index);
         }
-        if (value && typeof value === 'function')
+        if (name === 'onzrender')
+          onzrenderCallbacks.push(value.bind(null, node));
+        else if (value && typeof value === 'function')
           node[name] = value;
         else if (BOOLEAN_ATTRS.has(name))
           node.toggleAttribute(name, !!value);
@@ -180,5 +183,7 @@ function renderTemplate(template, subs, namespace, values) {
       }
     }
   }
+  for (const callback of onzrenderCallbacks)
+    callback();
   return content.firstChild && content.firstChild === content.lastChild ? content.firstChild : content;
 }
