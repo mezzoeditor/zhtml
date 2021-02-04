@@ -163,7 +163,7 @@ function renderTemplate(template, subs, namespace, values) {
         else if (value && typeof value === 'function')
           node[name] = value;
         else if (BOOLEAN_ATTRS.has(name))
-          node.toggleAttribute(name, !!value);
+          node.toggleAttribute(name, value === '' ? true : !!value);
         else
           node.setAttribute(name, value);
       }

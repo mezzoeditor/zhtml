@@ -14,7 +14,7 @@ module.exports.addTests = function addTests(testRunner, browserType) {
     testRunner.beforeAll(async state => {
       state.browser = await browserType.launch();
       state.page = await state.browser.newPage();
-      state.page.on('console', msg => console.log(msg.text()));
+      state.page.on('console', msg => console.log('LOG: ' + msg.text()));
       await state.page.goto(`${state.server.PREFIX}/demo.html`);
     });
 
@@ -302,6 +302,14 @@ module.exports.addTests = function addTests(testRunner, browserType) {
       dom: () => html`<div ${undefined} ${null}=foo></div>`,
       expected: {
         name: 'DIV',
+      }
+    });
+
+    itHTML('should work with attribute shorthands', {
+      dom: () => html`<input ${'disabled'}></input>`,
+      expected: {
+        name: 'INPUT',
+        attr: 'disabled',
       }
     });
 
