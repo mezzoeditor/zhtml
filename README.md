@@ -124,7 +124,7 @@ console.timeEnd('zhtml');
 
 ## Testing
 
-This is tested with [Cirrus CI](https://cirrus-ci.org/) on both Chromium and Firefox using [Puppeteer](https://github.com/GOogleChrome/puppeteer/).
+ZHTML is tested on Chrome, WebKit & Firefox using [Playwright](https://github.com/microsoft/playwright/).
 
 ## Inspiration
 
