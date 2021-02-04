@@ -27,9 +27,12 @@ testRunner.afterAll(async({server}) => {
   await server.stop();
 });
 
-require('./zhtml.spec.js').addTests(testRunner, require('playwright').chromium);
-require('./zhtml.spec.js').addTests(testRunner, require('playwright').firefox);
-require('./zhtml.spec.js').addTests(testRunner, require('playwright').webkit);
+if (!process.env.BROWSER || process.env.BROWSER === 'chromium' || process.env.BROWSER === 'all')
+  require('./zhtml.spec.js').addTests(testRunner, require('playwright').chromium);
+if (process.env.BROWSER === 'firefox' || process.env.BROWSER === 'all')
+  require('./zhtml.spec.js').addTests(testRunner, require('playwright').firefox);
+if (process.env.BROWSER === 'webkit' || process.env.BROWSER === 'all')
+  require('./zhtml.spec.js').addTests(testRunner, require('playwright').webkit);
 
 new Reporter(testRunner, path.join(__dirname));
 testRunner.run();
