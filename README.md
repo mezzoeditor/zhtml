@@ -7,6 +7,9 @@
 - [Text Nodes](#text-nodes)
 - [Event Listeners](#event-listeners)
 - [`onzrender` callback](#onzrender-callback)
+- [Performance](#performance)
+- [Testing](#testing)
+- [Inspiration](#inspiration)
 
 ## Installation
 
@@ -172,8 +175,6 @@ Inspired by Dmitry Gozman's experiments.
 Similar projects:
 - [lit-html](https://github.com/Polymer/lit-html)
 - [hyperHTML](https://github.com/WebReflection/hyperHTML)
-
-## Motivation
 
 `zhtml` does exactly what I want:
 - always returns Node (either DocumentFragment, TextNode or Element)
