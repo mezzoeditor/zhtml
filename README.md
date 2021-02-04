@@ -2,6 +2,12 @@
 
 [Demo](https://mezzoeditor.github.io/zhtml/demo.html)
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [Text Nodes](#text-nodes)
+- [Event Listeners](#event-listeners)
+- [`onzrender` callback](#onzrender-callback)
+
 ## Installation
 
 1. Copy `zhmlt.js` to your project.
@@ -24,8 +30,12 @@ const textNode = html`just some text`;
 // This returns DocumentFragment
 const fragment = html`<a>one</a> <a>two</a>`;
 
-// Render SVG circle. Returns element that belongs to the correct namespace URI.
-const circle = svg`<circle cx=200 cy=200 r=100 fill=blue></circle>`;
+// Render SVG. `svg` function returns element that belongs to the correct namespace URI.
+const circle = svg`
+  <svg viewbox="0 0 400 400" width="50px" height="50px">
+    <circle cx=200 cy=200 r=100 fill=blue></circle>
+  </svg>
+`;
 ```
 
 `html` supports nested arrays:
@@ -53,7 +63,6 @@ const textNode = html`yo`;
 textNode.$; // undefined - there's no querySelector.
 ```
 
-
 ## Text Nodes
 
 `zhtml` drops whitespace-only text nodes that have one or more newline character.
@@ -80,6 +89,36 @@ html`
   </span>${1}
 `;
 ```
+
+## Event Listeners
+
+Event listeners can be easily assigned using dom attributes.
+
+```js
+document.body.append(html`
+  <button onclick=${event => alert('Clicked!')}>clickme</button>
+`);
+```
+
+## `onzrender` callback
+
+`zhtml` understands a special `onzrender` attribute that gets called with the owning
+element right before the `html` function returns.
+
+This might be handy to get a handle on the particular element to further set it up.
+
+```js
+
+console.log('before rendering');
+const layout = html`
+  <section>
+    <div onzrender=${div => console.log(div)}>hello world</div>
+  </section>
+`;
+// 'div' will be logged before |html| function returns.
+console.log('after rendering');
+```
+
 
 ## Performance
 
