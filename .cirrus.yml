@@ -1,11 +1,7 @@
-env:
-  DISPLAY: :99.0
-
 task:
-  name: node8 (linux)
+  name: tests
   container:
-    dockerfile: .ci/node8/Dockerfile.linux
-  xvfb_start_background_script: Xvfb :99 -ac -screen 0 1024x768x24
+    dockerfile: mcr.microsoft.com/playwright
   install_script: npm install
   test_script: npm run test
 
