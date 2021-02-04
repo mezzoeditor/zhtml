@@ -1,7 +1,0 @@
-task:
-  name: tests
-  container:
-    dockerfile: mcr.microsoft.com/playwright
-  install_script: npm install
-  test_script: npm run test
-
