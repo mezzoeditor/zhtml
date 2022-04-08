@@ -10,10 +10,7 @@
   "author": "Andrey Lushnikoov",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@pptr/testserver": "^0.5.0",
-    "@pptr/testrunner": "^0.7.0"
-  },
-  "dependencies": {
-    "playwright": "^1.5.1"
+    "@playwright/test": "^1.20.2",
+    "node-static": "^0.7.11"
   }
 }
